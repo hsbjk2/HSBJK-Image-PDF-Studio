@@ -119,41 +119,46 @@ footer{
 
 <div class="tool">
   <h2>Image Cropper</h2>
-  <a href="https://hsbjk2.github.io/HSBJK-Image-Cropper/"
-     target="_blank" class="neon-btn">Open Tool</a>
+  <button onclick="redirectTool('https://hsbjk2.github.io/HSBJK-Image-Cropper/')">
+    Open Tool
+  </button>
 </div>
 
 <div class="tool">
   <h2>Resize / Dimension</h2>
-  <a href="https://hsbjk2.github.io/HSBJK-Image-Resizer/"
-     target="_blank" class="neon-btn">Open Tool</a>
+  <button onclick="redirectTool('https://hsbjk2.github.io/HSBJK-Image-Resizer/')">
+    Open Tool
+  </button>
 </div>
 
 <div class="tool">
   <h2>Reduce / Increase Size</h2>
-  <a href="https://hsbjk2.github.io/HSBJK-Image-Compressor-Compress-to-Specific-Size-KB-MB-/"
-     target="_blank" class="neon-btn">Open Tool</a>
+  <button onclick="redirectTool('https://hsbjk2.github.io/HSBJK-Image-Compressor-Compress-to-Specific-Size-KB-MB-/')">
+    Open Tool
+  </button>
 </div>
 
 <div class="tool">
   <h2>Background Remover</h2>
-  <a href="https://hsbjk2.github.io/HSBJK-Background-Remover/"
-     target="_blank" class="neon-btn">Open Tool</a>
+  <button onclick="redirectTool('https://hsbjk2.github.io/HSBJK-Background-Remover/')">
+    Open Tool
+  </button>
 </div>
 
 <div class="tool">
   <h2>Image → PDF</h2>
-  <a href="https://hsbjk2.github.io/HSBJK-Image-PDF/"
-     target="_blank" class="neon-btn">Convert</a>
+  <button onclick="redirectTool('https://hsbjk2.github.io/HSBJK-Image-PDF/')">
+    Convert
+  </button>
 </div>
 
 <div class="tool">
   <h2>PDF → Image</h2>
-  <a href="https://hsbjk2.github.io/HSBJK-PDF-Image/"
-     target="_blank" class="neon-btn">Convert</a>
-
-
+  <button onclick="redirectTool('https://hsbjk2.github.io/HSBJK-PDF-Image/')">
+    Convert
+  </button>
 </div>
+
 
 </section>
 
@@ -162,21 +167,15 @@ footer{
 </footer>
 
 <script>
-function redirectTool(btn,url){
-  document.querySelectorAll("button").forEach(b=>{
-    b.classList.remove("active");
-  });
-
-  btn.classList.add("active");
-
-  setTimeout(()=>{
-    window.location.href = url;
-  },200);
+function redirectTool(url){
+  window.open(url, "_blank");
 }
 </script>
 
+
 </body>
 </html>
+
 
 
 
