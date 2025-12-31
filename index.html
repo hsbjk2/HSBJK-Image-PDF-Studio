@@ -167,14 +167,23 @@ footer{
 </footer>
 
 <script>
-function redirectTool(url){
-  window.open(url, "_blank");
+function redirectTool(btn,url){
+  document.querySelectorAll("button").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+
+  setTimeout(()=>{
+    window.location.href = url;
+  },200);
 }
 </script>
 
 
 </body>
 </html>
+
 
 
 
