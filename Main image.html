@@ -1,0 +1,170 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HSBJK Image & PDF Tools</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --neon:#00f7ff;
+  --pink:#ff2fdc;
+  --glass:rgba(255,255,255,0.08);
+}
+
+*{
+  box-sizing:border-box;
+  font-family:'Poppins',sans-serif;
+}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#0b1a2e,#02040a);
+  color:white;
+}
+
+/* HEADER */
+header{
+  text-align:center;
+  padding:40px 20px;
+}
+
+header h1{
+  font-size:42px;
+  font-weight:800;
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+header p{opacity:.8}
+
+/* GRID */
+.tools{
+  max-width:1100px;
+  margin:auto;
+  padding:30px;
+  display:grid;
+  grid-template-columns:repeat(auto-fit,minmax(260px,1fr));
+  gap:25px;
+}
+
+/* CARD */
+.tool{
+  background:var(--glass);
+  border-radius:20px;
+  padding:25px;
+  backdrop-filter:blur(14px);
+  border:1px solid rgba(255,255,255,0.1);
+  transition:.4s;
+}
+
+.tool:hover{
+  transform:scale(1.04);
+  box-shadow:0 0 30px var(--neon);
+}
+
+.tool h2{
+  margin-bottom:15px;
+}
+
+/* BUTTON */
+.tool button{
+  width:100%;
+  padding:14px;
+  border:none;
+  border-radius:14px;
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  font-weight:600;
+  transition:.25s;
+}
+
+/* HOVER */
+.tool button:hover{
+  transform:scale(1.06);
+  box-shadow:0 0 25px var(--neon);
+}
+
+/* CLICK ACTIVE */
+.tool button.active,
+.tool button:active{
+  background:linear-gradient(90deg,#ff2fdc,#00f7ff);
+  box-shadow:0 0 35px #ff2fdc,0 0 60px #00f7ff;
+  transform:scale(.95);
+}
+
+/* FOOTER */
+footer{
+  text-align:center;
+  padding:20px;
+  opacity:.6;
+  font-size:14px;
+}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>HSBJK Image & PDF Studio</h1>
+  <p>Crop • Resize • Compress • Background Remove • Image ⇄ PDF</p>
+</header>
+
+<section class="tools">
+
+<div class="tool">
+  <h2>Image Cropper</h2>
+  <button onclick="redirectTool(this,'crop.html')">Open Tool</button>
+</div>
+
+<div class="tool">
+  <h2>Resize / Dimension</h2>
+  <button onclick="redirectTool(this,'resize.html')">Open Tool</button>
+</div>
+
+<div class="tool">
+  <h2>Reduce / Increase Size</h2>
+  <button onclick="redirectTool(this,'compress.html')">Open Tool</button>
+</div>
+
+<div class="tool">
+  <h2>Background Remover</h2>
+  <button onclick="redirectTool(this,'bg-remove.html')">Open Tool</button>
+</div>
+
+<div class="tool">
+  <h2>Image ➜ PDF</h2>
+  <button onclick="redirectTool(this,'image-to-pdf.html')">Convert</button>
+</div>
+
+<div class="tool">
+  <h2>PDF ➜ Image</h2>
+  <button onclick="redirectTool(this,'pdf-to-image.html')">Convert</button>
+</div>
+
+</section>
+
+<footer>
+© 2025 <b>HSBJK</b> • Neon Image Processing Platform
+</footer>
+
+<script>
+function redirectTool(btn,url){
+  document.querySelectorAll("button").forEach(b=>{
+    b.classList.remove("active");
+  });
+
+  btn.classList.add("active");
+
+  setTimeout(()=>{
+    window.location.href = url;
+  },200);
+}
+</script>
+
+</body>
+</html>

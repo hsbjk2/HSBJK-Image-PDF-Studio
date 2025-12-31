@@ -1,0 +1,228 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HSBJK Image Cropper</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --neon:#00f7ff;
+  --pink:#ff2fdc;
+  --glass:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#0b1a2e,#02040a);
+  color:white;
+  text-align:center;
+}
+
+header{padding:30px}
+header h1{
+  font-size:40px;
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.upload{
+  max-width:700px;
+  margin:20px auto;
+  padding:20px;
+  background:var(--glass);
+  border-radius:18px;
+  backdrop-filter:blur(14px);
+}
+
+.image-area{
+  display:none;
+  margin:30px auto;
+  position:relative;
+  width:fit-content;
+  box-shadow:0 0 35px var(--neon);
+  border-radius:18px;
+  overflow:hidden;
+}
+
+.image-area img{
+  display:block;
+  max-width:100%;
+}
+
+.crop-box{
+  position:absolute;
+  border:2px dashed var(--pink);
+  box-shadow:0 0 20px var(--pink);
+  cursor:move;
+}
+
+/* resize handles */
+.handle{
+  width:14px;
+  height:14px;
+  background:#ff2fdc;
+  position:absolute;
+  border-radius:50%;
+  box-shadow:0 0 12px #ff2fdc;
+}
+.tl{top:-7px;left:-7px;cursor:nwse-resize}
+.tr{top:-7px;right:-7px;cursor:nesw-resize}
+.bl{bottom:-7px;left:-7px;cursor:nesw-resize}
+.br{bottom:-7px;right:-7px;cursor:nwse-resize}
+
+button{
+  margin:25px;
+  padding:14px 28px;
+  border:none;
+  border-radius:16px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  transition:.25s;
+}
+button:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 30px var(--neon);
+}
+
+footer{opacity:.6;padding:20px}
+canvas{display:none}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>HSBJK Image Cropper</h1>
+  <p>Drag • Resize • Crop • Download</p>
+</header>
+
+<div class="upload">
+  <input type="file" id="upload" accept="image/*">
+</div>
+
+<div class="image-area" id="imageArea">
+  <img id="image">
+  <div class="crop-box" id="cropBox">
+    <span class="handle tl"></span>
+    <span class="handle tr"></span>
+    <span class="handle bl"></span>
+    <span class="handle br"></span>
+  </div>
+</div>
+
+<button onclick="cropImage()">Crop & Download</button>
+
+<footer>© 2025 HSBJK • Image Cropper Tool</footer>
+
+<canvas id="canvas"></canvas>
+
+<script>
+const upload = document.getElementById("upload");
+const image = document.getElementById("image");
+const imageArea = document.getElementById("imageArea");
+const cropBox = document.getElementById("cropBox");
+const canvas = document.getElementById("canvas");
+const ctx = canvas.getContext("2d");
+
+let action=null,startX,startY,startW,startH,startL,startT;
+
+upload.onchange=e=>{
+  const file=e.target.files[0];
+  if(!file) return;
+  const r=new FileReader();
+  r.onload=()=>{
+    image.src=r.result;
+    image.onload=()=>{
+      imageArea.style.display="block";
+      cropBox.style.left="40px";
+      cropBox.style.top="40px";
+      cropBox.style.width="200px";
+      cropBox.style.height="200px";
+    }
+  };
+  r.readAsDataURL(file);
+};
+
+cropBox.addEventListener("mousedown",e=>{
+  action = e.target.classList.contains("handle") ? e.target.classList[1] : "move";
+  startX=e.clientX;
+  startY=e.clientY;
+  startW=cropBox.offsetWidth;
+  startH=cropBox.offsetHeight;
+  startL=cropBox.offsetLeft;
+  startT=cropBox.offsetTop;
+  document.addEventListener("mousemove",moveResize);
+  document.addEventListener("mouseup",stop);
+});
+
+function moveResize(e){
+  const dx=e.clientX-startX;
+  const dy=e.clientY-startY;
+
+  if(action==="move"){
+    cropBox.style.left=startL+dx+"px";
+    cropBox.style.top=startT+dy+"px";
+  }
+  if(action==="br"){
+    cropBox.style.width=startW+dx+"px";
+    cropBox.style.height=startH+dy+"px";
+  }
+  if(action==="tl"){
+    cropBox.style.width=startW-dx+"px";
+    cropBox.style.height=startH-dy+"px";
+    cropBox.style.left=startL+dx+"px";
+    cropBox.style.top=startT+dy+"px";
+  }
+  if(action==="tr"){
+    cropBox.style.width=startW+dx+"px";
+    cropBox.style.height=startH-dy+"px";
+    cropBox.style.top=startT+dy+"px";
+  }
+  if(action==="bl"){
+    cropBox.style.width=startW-dx+"px";
+    cropBox.style.height=startH+dy+"px";
+    cropBox.style.left=startL+dx+"px";
+  }
+}
+
+function stop(){
+  document.removeEventListener("mousemove",moveResize);
+  document.removeEventListener("mouseup",stop);
+  action=null;
+}
+
+function cropImage(){
+  const r=cropBox.getBoundingClientRect();
+  const i=image.getBoundingClientRect();
+  const sx=image.naturalWidth/i.width;
+  const sy=image.naturalHeight/i.height;
+
+  canvas.width=r.width*sx;
+  canvas.height=r.height*sy;
+
+  ctx.drawImage(
+    image,
+    (r.left-i.left)*sx,
+    (r.top-i.top)*sy,
+    r.width*sx,
+    r.height*sy,
+    0,0,canvas.width,canvas.height
+  );
+
+  const a=document.createElement("a");
+  a.download="HSBJK_Cropped.png";
+  a.href=canvas.toDataURL();
+  a.click();
+}
+</script>
+
+</body>
+</html>

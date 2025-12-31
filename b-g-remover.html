@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>HSBJK Background Remover</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;600;800&display=swap" rel="stylesheet">
+
+<style>
+:root{
+  --neon:#00f7ff;
+  --pink:#ff2fdc;
+  --glass:rgba(255,255,255,0.08);
+}
+
+*{box-sizing:border-box;font-family:'Poppins',sans-serif}
+
+body{
+  margin:0;
+  min-height:100vh;
+  background:radial-gradient(circle at top,#0b1a2e,#02040a);
+  color:white;
+  text-align:center;
+}
+
+header{padding:30px}
+header h1{
+  font-size:40px;
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  -webkit-background-clip:text;
+  -webkit-text-fill-color:transparent;
+}
+
+.upload,.preview{
+  max-width:900px;
+  margin:20px auto;
+  padding:20px;
+  background:var(--glass);
+  border-radius:18px;
+  backdrop-filter:blur(14px);
+}
+
+.preview{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:20px;
+}
+
+.preview img{
+  max-width:100%;
+  border-radius:14px;
+  box-shadow:0 0 25px var(--neon);
+}
+
+button{
+  margin:25px;
+  padding:14px 30px;
+  border:none;
+  border-radius:16px;
+  font-weight:600;
+  cursor:pointer;
+  background:linear-gradient(90deg,var(--neon),var(--pink));
+  transition:.25s;
+}
+
+button:hover{
+  transform:scale(1.07);
+  box-shadow:0 0 30px var(--neon);
+}
+
+.info{
+  opacity:.8;
+  font-size:14px;
+}
+
+footer{opacity:.6;padding:20px}
+</style>
+</head>
+
+<body>
+
+<header>
+  <h1>HSBJK Background Remover</h1>
+  <p>Powered by remove.bg API</p>
+</header>
+
+<div class="upload">
+  <input type="file" id="upload" accept="image/*">
+</div>
+
+<div class="preview" id="preview" style="display:none">
+  <div>
+    <p>Original</p>
+    <img id="original">
+  </div>
+  <div>
+    <p>Background Removed</p>
+    <img id="output">
+  </div>
+</div>
+
+<button onclick="removeBackground()">Remove Background</button>
+
+<div class="info">
+  ⚠ Frontend API usage (key visible in source)
+</div>
+
+<footer>© 2025 HSBJK • AI Background Remover</footer>
+
+<script>
+const API_KEY = "GVXrECKcSFxqMvoabaxPRwWH"; // ⚠ UNSAFE (as requested)
+
+const upload = document.getElementById("upload");
+const original = document.getElementById("original");
+const output = document.getElementById("output");
+const preview = document.getElementById("preview");
+
+upload.onchange = e => {
+  const file = e.target.files[0];
+  if(!file) return;
+  original.src = URL.createObjectURL(file);
+  preview.style.display = "grid";
+};
+
+async function removeBackground(){
+  if(!upload.files[0]){
+    alert("Please upload an image");
+    return;
+  }
+
+  const formData = new FormData();
+  formData.append("image_file", upload.files[0]);
+  formData.append("size", "auto");
+
+  const res = await fetch("https://api.remove.bg/v1.0/removebg", {
+    method: "POST",
+    headers: {
+      "X-Api-Key": API_KEY
+    },
+    body: formData
+  });
+
+  if(!res.ok){
+    alert("Background removal failed (API limit or invalid key)");
+    return;
+  }
+
+  const blob = await res.blob();
+  const url = URL.createObjectURL(blob);
+  output.src = url;
+
+  // auto download
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "HSBJK_BG_Removed.png";
+  a.click();
+}
+</script>
+
+</body>
+</html>
